@@ -4,7 +4,7 @@
 
 
 # controller to get cost
-GET     /cost                    controllers.LyftController.cost
+GET     /cost/:startLat/:startLong/:endLat/:endLong                    controllers.LyftController.cost(startLat: Double, startLong: Double, endLat: Double, endLong: Double)
 
 
 # Map static resources from the /public folder to the /assets URL path
