@@ -1,11 +1,12 @@
 package lyftSaver;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 //http://gis.stackexchange.com/questions/2951/algorithm-for-offsetting-a-latitude-longitude-by-some-amount-of-meters
 
 public class Functions {
-	public static TripObject getCheapest(double startLat, double startLong, double endLat, double endLong) {
+	public static TripObject getCheapest(double startLat, double startLong, double endLat, double endLong) throws IOException {
 		TripObject initalLoc = new TripObject(startLat, startLong, endLat, endLong);
 		int earthRad = 6378137;
 		double dlat1 = 480 / earthRad;
@@ -30,9 +31,9 @@ public class Functions {
 		
 		TripObject cheapest = initalLoc;
 		for (TripObject t : list) {
-//			if (t.getMaxCost() < cheapest) {
-//				cheapest = t;
-//			}
+			if (t.getMaxCost() < cheapest.getMaxCost()) {
+				cheapest = t;
+			}
 		}
 		
 		return cheapest;

@@ -20,9 +20,7 @@ public class TripObject {
 		endingLong = endLong;
 		endingLat = endLat;
 	}
-	
-	
-	
+
 	public String getUrl() throws IOException{
 		String url = "https://api.lyft.com/v1/cost?start_lat=" + String.valueOf(startingLat) +
 				"&start_lng=" + String.valueOf(startingLong) + "&end_lat=" + String.valueOf(endingLat) + "&end_lng=" + String.valueOf(endingLong);
@@ -56,10 +54,12 @@ public class TripObject {
 		return 0;
 	}
 	
-	public static void main(String[] args) throws IOException{
-		TripObject to = new TripObject(-122.4233, 37.7772, -122.453, 37.7972);
-		System.out.println(to.getMaxCost());
+	public double getStartLong() {
+		return startingLong;
 	}
 	
+	public double getStartLat() {
+		return startingLat;
+	}
 
 }
