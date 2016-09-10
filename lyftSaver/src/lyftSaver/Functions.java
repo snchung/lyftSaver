@@ -30,9 +30,9 @@ public class Functions {
 		
 		TripObject cheapest = initalLoc;
 		for (TripObject t : list) {
-			if (t.getMaxCost() < cheapest) {
-				cheapest = t;
-			}
+//			if (t.getMaxCost() < cheapest) {
+//				cheapest = t;
+//			}
 		}
 		
 		return cheapest;
