@@ -10,7 +10,7 @@
 
   <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
 
-
+  <link rel="import" href="bower_components/polymer/polymer.html">
   <link rel="import" href="bower_components/google-map/google-map.html">
   <link rel="import" href="bower_components/google-map/google-map-directions.html">
   
@@ -21,79 +21,18 @@
   <link rel="import" href="bower_components/paper-input/paper-input.html">
   <link rel="import" href="bower_components/paper-card/paper-card.html">
   <link rel="import" href="bower_components/paper-button/paper-button.html">
+  <link rel="import" href="./my-app.html">
 
   <link rel="stylesheet" href="styles.css">
   
+
+
+
+
+  
 </head>
+<body>
+    <my-app></my-app>
 
-<body unresolved>
-
-  <script>
-        if (navigator.geolocation) {
-          
-          console.log('Geolocation is supported!');
-          window.onload = function() {
-            var startPos;
-            var geoSuccess = function(position) {
-              console.log('position ', position)
-              startPos = position;
-              // document.getElementById('startLat').innerHTML = startPos.coords.latitude;
-              // document.getElementById('startLon').innerHTML = startPos.coords.longitude;
-              var lat = startPos.coords.latitude;
-              var lng = startPos.coords.longitude;
-              console.log(lat)
-              console.log(lng)
-              document.querySelector('google-map').lattitude = lat;
-              document.querySelector('google-map').longitude = lng;
-              document.querySelector('google-map-marker').lattitude = lat;
-              document.querySelector('google-map-marker').longitude = lng;
-            };
-            navigator.geolocation.getCurrentPosition(geoSuccess);
-          };
-        }
-
-        
-        else {
-          console.log('Geolocation is not supported for this Browser/OS version yet.');
-        };
-
-      
-    </script>
-
-  <template is="dom-bind">
-
-      <google-map map="{{map}}" latitude="39.951527999999996" longitude="-75.1909214"
-          api-key="AIzaSyAZclY9gB2-9-JPQavOmGpxmIvWKU5HBTM" disable-default-ui zoom="14">
-        <google-map-marker latitude="39.951527999999996" longitude="-75.1909214"
-            title="Go Giants!" draggable="true"></google-map-marker>
-      </google-map>
-      
-      <google-map-directions map="{{map}}"
-          start-address="39.951527999999996, -75.1909214"
-          end-address="{{end}}"
-          api-key="AIzaSyAZclY9gB2-9-JPQavOmGpxmIvWKU5HBTM"></google-map-directions>
-      
-      <paper-card elevation="2">
-        <paper-icon-item>
-          <iron-icon icon="search" item-icon></iron-icon>
-          <paper-input label="Start address" 
-                       value="University of Pennsylvania"></paper-input>
-        </paper-icon-item>
-        <paper-icon-item>
-          <iron-icon icon="search" item-icon></iron-icon>
-          <paper-input label="End address"
-                       value="{{end}}"></paper-input>
-        </paper-icon-item>
-        <paper-button raised on-tap="lyftRequest">Find a Lyft</paper-button>
-      </paper-card>
-  </template>
-  <script>
-    Polymer({
-      is: "app",
-      lyftRequest: function() {
-        console.log("FIRE!!!!")
-      },
-    });
-  </script>
 </body>
 </html>

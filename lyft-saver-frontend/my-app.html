@@ -1,0 +1,151 @@
+
+  <link rel="import" href="bower_components/polymer/polymer.html">
+  <link rel="import" href="bower_components/google-map/google-map.html">
+  <link rel="import" href="bower_components/google-map/google-map-directions.html">
+  
+  <link rel="import" href="bower_components/iron-icon/iron-icon.html">
+  <link rel="import" href="bower_components/iron-icons/iron-icons.html">
+  <link rel="import" href="bower_components/paper-item/paper-item.html">
+  <link rel="import" href="bower_components/paper-item/paper-icon-item.html">
+  <link rel="import" href="bower_components/paper-input/paper-input.html">
+  <link rel="import" href="bower_components/paper-card/paper-card.html">
+  <link rel="import" href="bower_components/paper-button/paper-button.html">
+  <link rel="import" href="bower_components/paper-spinner/paper-spinner.html">
+  <link rel="import" href="bower_components/app-route/app-route.html">
+  <link rel="import" href="bower_components/app-route/app-location.html">
+  <script   src="https://code.jquery.com/jquery-3.1.0.min.js"   integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="   crossorigin="anonymous"></script>  
+
+
+<dom-module id="my-app">
+
+<script>
+        if (navigator.geolocation) {
+          window.onload = function() {
+            var startPos;
+            var geoSuccess = function(position) {
+              startPos = position;
+              // document.getElementById('startLat').innerHTML = startPos.coords.latitude;
+              // document.getElementById('startLon').innerHTML = startPos.coords.longitude;
+              var lat = startPos.coords.latitude;
+              var lng = startPos.coords.longitude;
+              document.querySelector('google-map').lattitude = lat;
+              document.querySelector('google-map').longitude = lng;
+              document.querySelector('google-map-marker').lattitude = lat;
+              document.querySelector('google-map-marker').longitude = lng;
+            };
+            navigator.geolocation.getCurrentPosition(geoSuccess);
+          };
+        }        
+        else {
+          console.log('Geolocation is not supported for this Browser/OS version yet.');
+        };
+
+    </script>
+  <template is="dom-bind">
+
+  <style>
+      :host {
+        display: block;
+        height: 800px !important;
+      }
+
+      paper-spinner {
+        --paper-spinner-layer-1-color: #ea0b8c;
+        --paper-spinner-layer-2-color: #ea0b8c;
+        --paper-spinner-layer-3-color: #ea0b8c;
+        --paper-spinner-layer-4-color: #ea0b8c;
+      }
+    </style>
+
+     <app-location use-hash-as-path route="{{route}}"></app-location>
+
+    <!-- Two routes, one for the home page, and one for the tabs page. -->
+     <app-route route="{{route}}" pattern="/result" tail="{{resultRoute}}" active="{{resultActive}}"></app-route>
+    <app-route route="{{route}}" pattern="/tabs" tail="{{tabsRoute}}" active="{{tabsActive}}"></app-route>
+    <app-route route="{{route}}" pattern="/" active="{{homeActive}}"></app-route>
+
+    <div hidden$="{{!homeActive}}">
+       <google-map map="{{map}}" latitude="39.951527999999996" longitude="-75.1909214"
+        api-key="AIzaSyAZclY9gB2-9-JPQavOmGpxmIvWKU5HBTM" disable-default-ui zoom="14">
+        <google-map-marker latitude="39.951527999999996" longitude="-75.1909214"
+            title="Your current location" draggable="true"></google-map-marker>
+        </google-map>
+        
+        <google-map-directions map="{{map}}"
+            start-address="39.951527999999996, -75.1909214"
+            end-address="{{end}}"
+            api-key="AIzaSyAZclY9gB2-9-JPQavOmGpxmIvWKU5HBTM"></google-map-directions>
+        
+        <paper-card elevation="2">
+          <paper-icon-item>
+            <iron-icon icon="search" item-icon></iron-icon>
+            <paper-input label="Start address" 
+                         value="University of Pennsylvania"></paper-input>
+          </paper-icon-item>
+          <paper-icon-item>
+            <iron-icon icon="search" item-icon></iron-icon>
+            <paper-input id="detination" label="End address" 
+                        value="{{end}}"></paper-input>
+          </paper-icon-item>
+          <paper-button href="#/tabs/" raised on-tap="lyftRequest">Find a Lyft</paper-button>
+        </paper-card>
+      <a href="#/tabs/" id="transition">Tabs page</a>
+    </div>
+
+    <div hidden$="{{!tabsActive}}">
+      <paper-spinner active></paper-spinner>
+      <h5>Searching for the best pick-up spot...</h5>
+      <a href="#/result" id="result">Back to result</a>
+      <tabs-page route="{{tabsRoute}}"></tabs-page>
+      <script>
+        setTimeout(function(){
+          $('#result')[0].click();
+        }, 12000);
+      </script>
+    </div>
+
+    <div hidden$="{{!resultActive}}" id="direction">
+        <paper-card elevation="2">
+          <div class="card-content">
+
+            <h4 class="lyft">Walk 0.2 miles to save $0.87 (11.7%) !</h4>
+            <h4 class="unbold">Recommended Pick-up Location: </h4>
+            <h4>3281 Chestnut Street</h4>
+            <h6>Head west on Smith Walk toward S 34th St</h6>
+            <h6>Turn right onto S 34th St</h6>
+            <h6>Slight right onto Woodland Walk</h6>
+            <h6>Turn right onto Chestnut St</h6>
+          </div>
+        </paper-card>
+      <tabs-page route="{{resultRoute}}"></tabs-page>
+    </div>
+      
+  </template>
+  <script>
+    Polymer({
+      is: "my-app",
+      ready: function() {
+        this.async(function() {
+          // If the path is blank, redirect to /
+          if (!this.route.path) {
+            this.set('route.path', '/');
+          }
+        });
+      },
+      lyftRequest: function() {
+        $('#transition')[0].click();
+        var geocoder = new google.maps.Geocoder();
+        var address = this.$.detination.value
+
+        geocoder.geocode( { 'address': address}, function(results, status) {
+          if (status == 'OK') {
+            var dlat = results[0].geometry.location.lat()
+            var dlng = results[0].geometry.location.lng()
+          } else {
+            alert('Geocode was not successful for the following reason: ' + status);
+          }
+        });
+      }
+    })
+  </script>
+</body>
